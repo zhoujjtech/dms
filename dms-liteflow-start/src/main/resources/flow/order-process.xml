@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    订单处理流程
+    描述：标准订单处理流程，包括验证、库存检查、金额计算和创建订单
+-->
+<chain name="orderProcessChain">
+    THEN(
+        validateOrder,
+        checkStock,
+        createOrder
+    )
+</chain>

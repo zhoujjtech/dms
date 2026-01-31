@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    订单审批流程
+    描述：带VIP判断的订单审批流程
+-->
+<chain name="orderApprovalChain">
+    THEN(
+        validateOrder,
+        WHEN(
+            checkStock,
+            calculateAmount
+        ),
+        IF(
+            isVIPUser,
+            vipApproval,
+            normalApproval
+        ),
+        createOrder
+    )
+</chain>

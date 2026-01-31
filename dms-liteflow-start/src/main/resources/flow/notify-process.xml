@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    通知处理子流程
+    描述：通知处理子流程，可被其他流程引用
+-->
+<chain name="notifyProcess">
+    THEN(
+        sendEmail,
+        sendSMS
+    )
+</chain>

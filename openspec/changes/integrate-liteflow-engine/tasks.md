@@ -26,19 +26,19 @@
 - [x] 2.11 创建 ConfigVersion 实体类
 - [x] 2.12 创建 ConfigTestCase 实体类
 - [x] 2.13 创建 ExecutionMonitoring 实体类
-- [ ] 2.14 创建对应的 Repository 接口
+- [x] 2.14 创建对应的 Repository 接口
 
 ## 3. XML 配置加载实现
 
-- [ ] 3.1 创建 resources/flow 目录
-- [ ] 3.2 创建示例流程链 XML 配置文件
-- [ ] 3.3 在 application.yml 中配置 XML 规则源路径
-- [ ] 3.4 实现流程链 XML 解析器
-- [ ] 3.5 实现组件 XML 配置加载
-- [ ] 3.6 实现子流程 XML 配置加载
-- [ ] 3.7 创建示例业务组件（validateOrder、checkStock 等）
-- [ ] 3.8 创建示例流程链配置
-- [ ] 3.9 验证 XML 配置加载功能
+- [x] 3.1 创建 resources/flow 目录
+- [x] 3.2 创建示例流程链 XML 配置文件
+- [x] 3.3 在 application.yml 中配置 XML 规则源路径
+- [x] 3.4 实现流程链 XML 解析器（LiteFlow内置）
+- [x] 3.5 实现组件 XML 配置加载（LiteFlow内置）
+- [x] 3.6 实现子流程 XML 配置加载（LiteFlow内置）
+- [x] 3.7 创建示例业务组件（validateOrder、checkStock 等）
+- [x] 3.8 创建示例流程链配置
+- [x] 3.9 验证 XML 配置加载功能
 
 ## 4. 动态配置加载实现
 
