@@ -236,15 +236,15 @@
 
 ## 18. 流程执行 API 实现
 
-- [ ] 18.1 创建 ExecutionController 控制器
-- [ ] 18.2 实现同步执行流程 API (POST /api/execute/sync)
-- [ ] 18.3 实现异步执行流程 API (POST /api/execute/async)
-- [ ] 18.4 实现执行状态查询 API (GET /api/execute/status/{executionId})
-- [ ] 18.5 实现执行结果查询 API (GET /api/execute/result/{executionId})
-- [ ] 18.6 创建 ExecutionRequestDTO 模型
-- [ ] 18.7 创建 ExecutionResponseVO 模型
-- [ ] 18.8 创建 ExecutionStatusVO 模型
-- [ ] 18.9 实现执行超时处理
+- [x] 18.1 创建 ExecutionController 控制器
+- [x] 18.2 实现同步执行流程 API (POST /api/execute/sync)
+- [x] 18.3 实现异步执行流程 API (POST /api/execute/async)
+- [x] 18.4 实现执行状态查询 API (GET /api/execute/status/{executionId})
+- [x] 18.5 实现执行结果查询 API (GET /api/execute/result/{executionId})
+- [x] 18.6 创建 ExecutionRequestDTO 模型
+- [x] 18.7 创建 ExecutionResponseVO 模型
+- [x] 18.8 创建 ExecutionStatusVO 模型
+- [x] 18.9 实现执行超时处理
 - [ ] 18.10 测试流程执行 API
 
 ## 19. 全局异常处理
@@ -252,7 +252,7 @@
 - [x] 19.1 创建 GlobalExceptionHandler 组件
 - [x] 19.2 实现全局异常拦截逻辑
 - [x] 19.3 实现异常日志记录
-- [ ] 19.4 实现异常上报到监控
+- [x] 19.4 实现异常上报到监控
 - [x] 19.5 创建 GlobalExceptionHandlerAdvice（HTTP 异常）
 - [x] 19.6 实现统一错误响应格式
 - [ ] 19.7 测试全局异常处理
@@ -271,10 +271,10 @@
 ## 21. 健康检查与监控集成
 
 - [x] 21.1 配置 LiteFlow Actuator 集成
-- [ ] 21.2 实现引擎健康检查端点
-- [ ] 21.3 实现配置加载状态检查
-- [ ] 21.4 实现组件注册状态检查
-- [ ] 21.5 创建自定义 HealthIndicator
+- [x] 21.2 实现引擎健康检查端点
+- [x] 21.3 实现配置加载状态检查
+- [x] 21.4 实现组件注册状态检查
+- [x] 21.5 创建自定义 HealthIndicator
 - [ ] 21.6 测试健康检查端点
 
 ## 22. 文档与测试
