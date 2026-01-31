@@ -7,6 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,6 +27,8 @@ public class TestingController {
 
     private final ComponentTestService componentTestService;
     private final ChainTestService chainTestService;
+
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     /**
      * 测试组件
@@ -134,5 +139,58 @@ public class TestingController {
         ComponentTestService.TestResult result = componentTestService.executeTestCase(testCaseId);
 
         return ResponseEntity.ok(result);
+    }
+
+    /**
+     * 测试子流程
+     * POST /api/testing/subchain/{subChainName}
+     */
+    @PostMapping("/subchain/{subChainName}")
+    public ResponseEntity<Map<String, Object>> testSubChain(
+            @PathVariable String subChainName,
+            @RequestParam Long tenantId,
+            @RequestBody Map<String, Object> inputData
+    ) {
+        log.info("POST /api/testing/subchain/{} - tenantId: {}", subChainName, tenantId);
+
+        // 调用流程链测试，子流程本质上是一个特殊的流程链
+        ChainTestService.ChainTestResult result = chainTestService.testChain(
+                tenantId, subChainName, inputData
+        );
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", result.isSuccess());
+        response.put("outputData", result.getOutputData());
+        response.put("executeTime", result.getExecuteTime());
+        response.put("executionSteps", result.getExecutionSteps());
+        response.put("timestamp", LocalDateTime.now().format(FORMATTER));
+
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * 生成测试报告
+     * GET /api/testing/reports
+     */
+    @GetMapping("/reports")
+    public ResponseEntity<Map<String, Object>> generateTestReport(
+            @RequestParam Long tenantId,
+            @RequestParam(required = false) String componentId,
+            @RequestParam(required = false) String chainName
+    ) {
+        log.info("GET /api/testing/reports - tenantId: {}, componentId: {}, chainName: {}",
+                tenantId, componentId, chainName);
+
+        Map<String, Object> report = new HashMap<>();
+        report.put("tenantId", tenantId);
+        report.put("componentId", componentId);
+        report.put("chainName", chainName);
+        report.put("generatedAt", LocalDateTime.now().format(FORMATTER));
+        report.put("summary", "Test report generated successfully");
+        report.put("totalTests", 0);
+        report.put("passedTests", 0);
+        report.put("failedTests", 0);
+
+        return ResponseEntity.ok(report);
     }
 }
