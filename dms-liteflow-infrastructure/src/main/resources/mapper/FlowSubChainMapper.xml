@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dms.liteflow.infrastructure.persistence.mapper.FlowSubChainMapper">
+
+    <resultMap id="BaseResultMap" type="com.dms.liteflow.domain.flowexec.entity.FlowSubChain">
+        <id column="id" property="id"/>
+        <result column="tenant_id" property="tenantId"/>
+        <result column="sub_chain_name" property="subChainName"/>
+        <result column="chain_code" property="chainCode"/>
+        <result column="description" property="description"/>
+        <result column="parent_chain_id" property="parentChainId"/>
+        <result column="status" property="status"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.dms.liteflow.domain.flowexec.entity.FlowSubChain">
+        INSERT INTO flow_sub_chain (
+            tenant_id, sub_chain_name, chain_code, description,
+            parent_chain_id, status, created_at, updated_at
+        ) VALUES (
+            #{tenantId}, #{subChainName}, #{chainCode}, #{description},
+            #{parentChainId}, #{status}, NOW(), NOW()
+        )
+    </insert>
+
+    <update id="updateById" parameterType="com.dms.liteflow.domain.flowexec.entity.FlowSubChain">
+        UPDATE flow_sub_chain
+        SET sub_chain_name = #{subChainName},
+            chain_code = #{chainCode},
+            description = #{description},
+            status = #{status},
+            updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT * FROM flow_sub_chain
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectByTenantId" resultMap="BaseResultMap">
+        SELECT * FROM flow_sub_chain
+        WHERE tenant_id = #{tenantId}
+        ORDER BY created_at DESC
+    </select>
+
+    <select id="selectByTenantIdAndName" resultMap="BaseResultMap">
+        SELECT * FROM flow_sub_chain
+        WHERE tenant_id = #{tenantId}
+          AND sub_chain_name = #{subChainName}
+        LIMIT 1
+    </select>
+
+    <select id="selectByParentChainId" resultMap="BaseResultMap">
+        SELECT * FROM flow_sub_chain
+        WHERE parent_chain_id = #{parentChainId}
+        ORDER BY created_at DESC
+    </select>
+
+    <delete id="deleteById">
+        DELETE FROM flow_sub_chain
+        WHERE id = #{id}
+    </delete>
+
+</mapper>
