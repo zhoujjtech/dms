@@ -1,13 +1,15 @@
 package com.dms.liteflow.api.version;
 
-import com.dms.liteflow.domain.version.aggregate.ConfigVersion;
+import com.dms.liteflow.application.version.DiffService;
 import com.dms.liteflow.application.version.VersionService;
+import com.dms.liteflow.domain.version.aggregate.ConfigVersion;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 版本管理控制器
@@ -22,6 +24,7 @@ import java.util.List;
 public class VersionController {
 
     private final VersionService versionService;
+    private final DiffService diffService;
 
     /**
      * 获取配置的所有版本
@@ -124,19 +127,78 @@ public class VersionController {
     }
 
     /**
-     * 对比两个版本
+     * 对比两个版本（文本格式）
      * GET /api/versions/compare?versionId1={versionId1}&versionId2={versionId2}
      */
     @GetMapping("/compare")
-    public ResponseEntity<String> compareVersions(
+    public ResponseEntity<DiffService.DiffResult> compareVersions(
             @RequestParam Long versionId1,
             @RequestParam Long versionId2
     ) {
         log.info("GET /api/versions/compare - versionId1: {}, versionId2: {}", versionId1, versionId2);
 
-        String diff = versionService.compareVersions(versionId1, versionId2);
+        DiffService.DiffResult diff = versionService.compareVersions(versionId1, versionId2);
 
         return ResponseEntity.ok(diff);
+    }
+
+    /**
+     * 对比两个版本（HTML格式）
+     * GET /api/versions/compare/html?versionId1={versionId1}&versionId2={versionId2}
+     */
+    @GetMapping(value = "/compare/html", produces = "text/html;charset=UTF-8")
+    public ResponseEntity<String> compareVersionsHtml(
+            @RequestParam Long versionId1,
+            @RequestParam Long versionId2
+    ) {
+        log.info("GET /api/versions/compare/html - versionId1: {}, versionId2: {}", versionId1, versionId2);
+
+        String html = versionService.compareVersionsHtml(versionId1, versionId2);
+
+        return ResponseEntity.ok(html);
+    }
+
+    /**
+     * 获取当前版本
+     * GET /api/versions/current?tenantId={tenantId}&configType={configType}&configId={configId}
+     */
+    @GetMapping("/current")
+    public ResponseEntity<ConfigVersion> getCurrentVersion(
+            @RequestParam Long tenantId,
+            @RequestParam String configType,
+            @RequestParam Long configId
+    ) {
+        log.info("GET /api/versions/current - tenantId: {}, configType: {}, configId: {}",
+                tenantId, configType, configId);
+
+        return versionService.getCurrentVersion(tenantId, configType, configId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    /**
+     * 获取当前版本号
+     * GET /api/versions/current/number?tenantId={tenantId}&configType={configType}&configId={configId}
+     */
+    @GetMapping("/current/number")
+    public ResponseEntity<Map<String, Object>> getCurrentVersionNumber(
+            @RequestParam Long tenantId,
+            @RequestParam String configType,
+            @RequestParam Long configId
+    ) {
+        log.info("GET /api/versions/current/number - tenantId: {}, configType: {}, configId: {}",
+                tenantId, configType, configId);
+
+        Integer versionNumber = versionService.getCurrentVersionNumber(tenantId, configType, configId);
+
+        Map<String, Object> response = Map.of(
+                "tenantId", tenantId,
+                "configType", configType,
+                "configId", configId,
+                "currentVersion", versionNumber
+        );
+
+        return ResponseEntity.ok(response);
     }
 
     /**

@@ -29,6 +29,7 @@ public class VersionService {
 
     private final ConfigVersionRepository configVersionRepository;
     private final RuleComponentRepository ruleComponentRepository;
+    private final DiffService diffService;
 
     private static final int MAX_VERSIONS = 50;
 
@@ -222,24 +223,59 @@ public class VersionService {
     }
 
     /**
-     * 对比两个版本
+     * 对比两个版本（文本格式）
      *
      * @param versionId1 第一个版本ID
      * @param versionId2 第二个版本ID
      * @return 差异信息
      */
-    public String compareVersions(Long versionId1, Long versionId2) {
+    public DiffService.DiffResult compareVersions(Long versionId1, Long versionId2) {
         log.info("Comparing versions: {} and {}", versionId1, versionId2);
+        return diffService.compareVersionsText(versionId1, versionId2);
+    }
 
-        ConfigVersion version1 = configVersionRepository.findById(versionId1)
-                .orElseThrow(() -> new IllegalArgumentException("Version not found: " + versionId1));
+    /**
+     * 对比两个版本（HTML格式）
+     *
+     * @param versionId1 第一个版本ID
+     * @param versionId2 第二个版本ID
+     * @return HTML格式的差异信息
+     */
+    public String compareVersionsHtml(Long versionId1, Long versionId2) {
+        log.info("Comparing versions with HTML: {} and {}", versionId1, versionId2);
+        return diffService.compareVersionsHtml(versionId1, versionId2);
+    }
 
-        ConfigVersion version2 = configVersionRepository.findById(versionId2)
-                .orElseThrow(() -> new IllegalArgumentException("Version not found: " + versionId2));
+    /**
+     * 获取当前版本（最新版本）
+     *
+     * @param tenantId   租户ID
+     * @param configType 配置类型
+     * @param configId   配置ID
+     * @return 当前版本信息
+     */
+    public Optional<ConfigVersion> getCurrentVersion(Long tenantId, String configType, Long configId) {
+        log.info("Getting current version for configType: {}, configId: {}", configType, configId);
 
-        // TODO: 使用 java-diff-utils 实现详细的差异对比
-        return String.format("Version %d vs Version %d",
-                version1.getVersion(), version2.getVersion());
+        return configVersionRepository.findLatestVersion(
+                TenantId.of(tenantId),
+                configType,
+                configId
+        );
+    }
+
+    /**
+     * 获取当前版本号
+     *
+     * @param tenantId   租户ID
+     * @param configType 配置类型
+     * @param configId   配置ID
+     * @return 当前版本号，如果没有版本返回0
+     */
+    public Integer getCurrentVersionNumber(Long tenantId, String configType, Long configId) {
+        return getCurrentVersion(tenantId, configType, configId)
+                .map(ConfigVersion::getVersion)
+                .orElse(0);
     }
 
     /**
