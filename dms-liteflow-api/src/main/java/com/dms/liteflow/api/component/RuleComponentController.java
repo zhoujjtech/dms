@@ -67,6 +67,41 @@ public class RuleComponentController {
     }
 
     /**
+     * 查询组件详情
+     * GET /api/components/{componentId}
+     */
+    @GetMapping("/{componentId}")
+    public ResponseEntity<RuleComponent> getComponent(
+            @PathVariable String componentId
+    ) {
+        log.info("GET /api/components/{}", componentId);
+
+        RuleComponent component = ruleComponentApplicationService.getComponent(componentId);
+
+        return ResponseEntity.ok(component);
+    }
+
+    /**
+     * 更新组件
+     * PUT /api/components/{componentId}
+     */
+    @PutMapping("/{componentId}")
+    public ResponseEntity<RuleComponent> updateComponent(
+            @PathVariable String componentId,
+            @RequestParam String componentName,
+            @RequestParam(required = false) String description,
+            @RequestParam String content
+    ) {
+        log.info("PUT /api/components/{} - componentName: {}", componentId, componentName);
+
+        RuleComponent component = ruleComponentApplicationService.updateComponent(
+                componentId, componentName, description, content
+        );
+
+        return ResponseEntity.ok(component);
+    }
+
+    /**
      * 发布组件
      * POST /api/components/{componentId}/publish
      */
@@ -78,6 +113,38 @@ public class RuleComponentController {
         log.info("POST /api/components/{}/publish - tenantId: {}", componentId, tenantId);
 
         ruleComponentApplicationService.publishComponent(tenantId, componentId);
+
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * 启用组件
+     * POST /api/components/{componentId}/enable
+     */
+    @PostMapping("/{componentId}/enable")
+    public ResponseEntity<Void> enableComponent(
+            @PathVariable String componentId,
+            @RequestParam Long tenantId
+    ) {
+        log.info("POST /api/components/{}/enable - tenantId: {}", componentId, tenantId);
+
+        ruleComponentApplicationService.enableComponent(tenantId, componentId);
+
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * 禁用组件
+     * POST /api/components/{componentId}/disable
+     */
+    @PostMapping("/{componentId}/disable")
+    public ResponseEntity<Void> disableComponent(
+            @PathVariable String componentId,
+            @RequestParam Long tenantId
+    ) {
+        log.info("POST /api/components/{}/disable - tenantId: {}", componentId, tenantId);
+
+        ruleComponentApplicationService.disableComponent(tenantId, componentId);
 
         return ResponseEntity.ok().build();
     }

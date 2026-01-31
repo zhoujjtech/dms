@@ -21,7 +21,17 @@ public enum ComponentStatus {
     /**
      * 已归档
      */
-    ARCHIVED("ARCHIVED", "已归档");
+    ARCHIVED("ARCHIVED", "已归档"),
+
+    /**
+     * 已启用
+     */
+    ENABLED("ENABLED", "已启用"),
+
+    /**
+     * 已禁用
+     */
+    DISABLED("DISABLED", "已禁用");
 
     private final String code;
     private final String description;

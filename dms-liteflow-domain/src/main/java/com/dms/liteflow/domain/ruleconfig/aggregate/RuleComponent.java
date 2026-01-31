@@ -93,6 +93,22 @@ public class RuleComponent {
     }
 
     /**
+     * 启用组件
+     */
+    public void enable() {
+        this.status = ComponentStatus.ENABLED;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    /**
+     * 禁用组件
+     */
+    public void disable() {
+        this.status = ComponentStatus.DISABLED;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    /**
      * 更新组件内容
      */
     public void updateContent(String newContent) {

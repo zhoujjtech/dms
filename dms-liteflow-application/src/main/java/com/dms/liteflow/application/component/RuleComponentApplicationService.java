@@ -76,6 +76,81 @@ public class RuleComponentApplicationService {
     }
 
     /**
+     * 查询组件详情
+     */
+    public RuleComponent getComponent(String componentId) {
+        log.info("Getting component: {}", componentId);
+
+        return ruleComponentRepository.findByComponentId(ComponentId.of(componentId))
+                .orElseThrow(() -> new IllegalArgumentException("Component not found: " + componentId));
+    }
+
+    /**
+     * 更新组件
+     */
+    @Transactional
+    public RuleComponent updateComponent(
+            String componentId,
+            String componentName,
+            String description,
+            String content
+    ) {
+        log.info("Updating component: {}", componentId);
+
+        RuleComponent component = ruleComponentRepository.findByComponentId(ComponentId.of(componentId))
+                .orElseThrow(() -> new IllegalArgumentException("Component not found: " + componentId));
+
+        // 只能更新草稿状态的组件
+        if (component.getStatus() == ComponentStatus.PUBLISHED) {
+            throw new IllegalStateException("Cannot update published component. Create a new version instead.");
+        }
+
+        component.setComponentName(componentName);
+        component.setDescription(description);
+        component.setContent(content);
+
+        return ruleComponentRepository.save(component);
+    }
+
+    /**
+     * 启用组件
+     */
+    @Transactional
+    public void enableComponent(Long tenantId, String componentId) {
+        log.info("Enabling component: {} for tenant: {}", componentId, tenantId);
+
+        RuleComponent component = ruleComponentRepository.findByComponentId(ComponentId.of(componentId))
+                .orElseThrow(() -> new IllegalArgumentException("Component not found: " + componentId));
+
+        // 验证租户
+        if (!component.getTenantId().getValue().equals(tenantId)) {
+            throw new IllegalArgumentException("Component does not belong to tenant: " + tenantId);
+        }
+
+        component.enable();
+        ruleComponentRepository.save(component);
+    }
+
+    /**
+     * 禁用组件
+     */
+    @Transactional
+    public void disableComponent(Long tenantId, String componentId) {
+        log.info("Disabling component: {} for tenant: {}", componentId, tenantId);
+
+        RuleComponent component = ruleComponentRepository.findByComponentId(ComponentId.of(componentId))
+                .orElseThrow(() -> new IllegalArgumentException("Component not found: " + componentId));
+
+        // 验证租户
+        if (!component.getTenantId().getValue().equals(tenantId)) {
+            throw new IllegalArgumentException("Component does not belong to tenant: " + tenantId);
+        }
+
+        component.disable();
+        ruleComponentRepository.save(component);
+    }
+
+    /**
      * 查询租户的所有组件
      */
     public List<RuleComponent> getComponentsByTenant(Long tenantId) {

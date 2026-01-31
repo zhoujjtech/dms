@@ -112,6 +112,22 @@ public class FlowChain {
     }
 
     /**
+     * 启用流程链
+     */
+    public void enable() {
+        this.status = ComponentStatus.ENABLED;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    /**
+     * 禁用流程链
+     */
+    public void disable() {
+        this.status = ComponentStatus.DISABLED;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    /**
      * 更新流程链
      */
     public void updateChain(String newChainCode, String newDescription) {

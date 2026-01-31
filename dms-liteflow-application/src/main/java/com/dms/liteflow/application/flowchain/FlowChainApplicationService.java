@@ -119,6 +119,44 @@ public class FlowChainApplicationService {
     }
 
     /**
+     * 启用流程链
+     */
+    @Transactional
+    public void enableChain(Long tenantId, Long chainId) {
+        log.info("Enabling flow chain: {} for tenant: {}", chainId, tenantId);
+
+        FlowChain chain = flowChainRepository.findById(ChainId.of(chainId))
+                .orElseThrow(() -> new IllegalArgumentException("Flow chain not found: " + chainId));
+
+        // 验证租户
+        if (!chain.getTenantId().getValue().equals(tenantId)) {
+            throw new IllegalArgumentException("Flow chain does not belong to tenant: " + tenantId);
+        }
+
+        chain.enable();
+        flowChainRepository.save(chain);
+    }
+
+    /**
+     * 禁用流程链
+     */
+    @Transactional
+    public void disableChain(Long tenantId, Long chainId) {
+        log.info("Disabling flow chain: {} for tenant: {}", chainId, tenantId);
+
+        FlowChain chain = flowChainRepository.findById(ChainId.of(chainId))
+                .orElseThrow(() -> new IllegalArgumentException("Flow chain not found: " + chainId));
+
+        // 验证租户
+        if (!chain.getTenantId().getValue().equals(tenantId)) {
+            throw new IllegalArgumentException("Flow chain does not belong to tenant: " + tenantId);
+        }
+
+        chain.disable();
+        flowChainRepository.save(chain);
+    }
+
+    /**
      * 删除流程链
      */
     @Transactional

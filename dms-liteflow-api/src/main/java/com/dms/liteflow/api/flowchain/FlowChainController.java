@@ -121,6 +121,38 @@ public class FlowChainController {
     }
 
     /**
+     * 启用流程链
+     * POST /api/chains/{chainId}/enable
+     */
+    @PostMapping("/{chainId}/enable")
+    public ResponseEntity<Void> enableChain(
+            @PathVariable Long chainId,
+            @RequestParam Long tenantId
+    ) {
+        log.info("POST /api/chains/{}/enable - tenantId: {}", chainId, tenantId);
+
+        flowChainApplicationService.enableChain(tenantId, chainId);
+
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * 禁用流程链
+     * POST /api/chains/{chainId}/disable
+     */
+    @PostMapping("/{chainId}/disable")
+    public ResponseEntity<Void> disableChain(
+            @PathVariable Long chainId,
+            @RequestParam Long tenantId
+    ) {
+        log.info("POST /api/chains/{}/disable - tenantId: {}", chainId, tenantId);
+
+        flowChainApplicationService.disableChain(tenantId, chainId);
+
+        return ResponseEntity.ok().build();
+    }
+
+    /**
      * 删除流程链
      * DELETE /api/chains/{chainId}
      */
