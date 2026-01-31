@@ -23,6 +23,12 @@
             <artifactId>dms-liteflow-domain</artifactId>
         </dependency>
 
+        <!-- Infrastructure Layer -->
+        <dependency>
+            <groupId>com.dms</groupId>
+            <artifactId>dms-liteflow-infrastructure</artifactId>
+        </dependency>
+
         <!-- LiteFlow -->
         <dependency>
             <groupId>com.yomahub</groupId>
