@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dms.liteflow.infrastructure.persistence.mapper.ConfigVersionMapper">
+
+    <resultMap id="BaseResultMap" type="com.dms.liteflow.infrastructure.persistence.entity.ConfigVersionEntity">
+        <id column="id" property="id"/>
+        <result column="tenant_id" property="tenantId"/>
+        <result column="config_type" property="configType"/>
+        <result column="config_id" property="configId"/>
+        <result column="version" property="version"/>
+        <result column="content" property="content"/>
+        <result column="status" property="status"/>
+        <result column="created_by" property="createdBy"/>
+        <result column="created_at" property="createdAt"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.dms.liteflow.infrastructure.persistence.entity.ConfigVersionEntity">
+        INSERT INTO config_version (
+            tenant_id, config_type, config_id, version, content,
+            status, created_by, created_at
+        ) VALUES (
+            #{tenantId}, #{configType}, #{configId}, #{version}, #{content},
+            #{status}, #{createdBy}, NOW()
+        )
+    </insert>
+
+    <update id="updateById" parameterType="com.dms.liteflow.infrastructure.persistence.entity.ConfigVersionEntity">
+        UPDATE config_version
+        SET version = #{version},
+            content = #{content},
+            status = #{status}
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT * FROM config_version
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectByTenantIdAndConfigTypeAndConfigId" resultMap="BaseResultMap">
+        SELECT * FROM config_version
+        WHERE tenant_id = #{tenantId}
+          AND config_type = #{configType}
+          AND config_id = #{configId}
+        ORDER BY version DESC
+    </select>
+
+    <select id="selectByTenantIdAndConfigTypeAndConfigIdAndVersion" resultMap="BaseResultMap">
+        SELECT * FROM config_version
+        WHERE tenant_id = #{tenantId}
+          AND config_type = #{configType}
+          AND config_id = #{configId}
+          AND version = #{version}
+        LIMIT 1
+    </select>
+
+    <select id="selectLatestVersion" resultMap="BaseResultMap">
+        SELECT * FROM config_version
+        WHERE tenant_id = #{tenantId}
+          AND config_type = #{configType}
+          AND config_id = #{configId}
+          AND status = 'PUBLISHED'
+        ORDER BY version DESC
+        LIMIT 1
+    </select>
+
+    <select id="countVersions" resultType="long">
+        SELECT COUNT(*) FROM config_version
+        WHERE tenant_id = #{tenantId}
+          AND config_type = #{configType}
+          AND config_id = #{configId}
+    </select>
+
+    <delete id="deleteById">
+        DELETE FROM config_version
+        WHERE id = #{id}
+    </delete>
+
+</mapper>

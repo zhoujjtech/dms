@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dms.liteflow.infrastructure.persistence.mapper.TestCaseMapper">
+
+    <resultMap id="BaseResultMap" type="com.dms.liteflow.infrastructure.persistence.entity.TestCaseEntity">
+        <id column="id" property="id"/>
+        <result column="tenant_id" property="tenantId"/>
+        <result column="config_type" property="configType"/>
+        <result column="config_id" property="configId"/>
+        <result column="name" property="name"/>
+        <result column="input_data" property="inputData"/>
+        <result column="expected_result" property="expectedResult"/>
+        <result column="created_at" property="createdAt"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.dms.liteflow.infrastructure.persistence.entity.TestCaseEntity">
+        INSERT INTO config_test_case (
+            tenant_id, config_type, config_id, name,
+            input_data, expected_result, created_at
+        ) VALUES (
+            #{tenantId}, #{configType}, #{configId}, #{name},
+            #{inputData}, #{expectedResult}, NOW()
+        )
+    </insert>
+
+    <update id="updateById" parameterType="com.dms.liteflow.infrastructure.persistence.entity.TestCaseEntity">
+        UPDATE config_test_case
+        SET name = #{name},
+            input_data = #{inputData},
+            expected_result = #{expectedResult}
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT * FROM config_test_case
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectByTenantId" resultMap="BaseResultMap">
+        SELECT * FROM config_test_case
+        WHERE tenant_id = #{tenantId}
+        ORDER BY created_at DESC
+    </select>
+
+    <select id="selectByTenantIdAndConfigTypeAndConfigId" resultMap="BaseResultMap">
+        SELECT * FROM config_test_case
+        WHERE tenant_id = #{tenantId}
+          AND config_type = #{configType}
+          AND config_id = #{configId}
+        ORDER BY created_at DESC
+    </select>
+
+    <delete id="deleteById">
+        DELETE FROM config_test_case
+        WHERE id = #{id}
+    </delete>
+
+</mapper>

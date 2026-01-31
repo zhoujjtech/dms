@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dms.liteflow.infrastructure.persistence.mapper.ExecutionRecordMapper">
+
+    <resultMap id="BaseResultMap" type="com.dms.liteflow.infrastructure.persistence.entity.ExecutionRecordEntity">
+        <id column="id" property="id"/>
+        <result column="tenant_id" property="tenantId"/>
+        <result column="chain_id" property="chainId"/>
+        <result column="component_id" property="componentId"/>
+        <result column="chain_execution_id" property="chainExecutionId"/>
+        <result column="execute_time" property="executeTime"/>
+        <result column="status" property="status"/>
+        <result column="error_message" property="errorMessage"/>
+        <result column="created_at" property="createdAt"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.dms.liteflow.infrastructure.persistence.entity.ExecutionRecordEntity">
+        INSERT INTO execution_monitoring (
+            tenant_id, chain_id, component_id, chain_execution_id,
+            execute_time, status, error_message, created_at
+        ) VALUES (
+            #{tenantId}, #{chainId}, #{componentId}, #{chainExecutionId},
+            #{executeTime}, #{status}, #{errorMessage}, NOW()
+        )
+    </insert>
+
+    <update id="updateById" parameterType="com.dms.liteflow.infrastructure.persistence.entity.ExecutionRecordEntity">
+        UPDATE execution_monitoring
+        SET execute_time = #{executeTime},
+            status = #{status},
+            error_message = #{errorMessage}
+        WHERE id = #{id}
+    </update>
+
+    <insert id="insertBatch">
+        INSERT INTO execution_monitoring (
+            tenant_id, chain_id, component_id, chain_execution_id,
+            execute_time, status, error_message, created_at
+        ) VALUES
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.tenantId}, #{entity.chainId}, #{entity.componentId}, #{entity.chainExecutionId},
+            #{entity.executeTime}, #{entity.status}, #{entity.errorMessage}, NOW())
+        </foreach>
+    </insert>
+
+    <select id="selectByExecutionId" resultMap="BaseResultMap">
+        SELECT * FROM execution_monitoring
+        WHERE chain_execution_id = #{executionId}
+        ORDER BY created_at ASC
+    </select>
+
+    <select id="selectByChainIdAndTimeRange" resultMap="BaseResultMap">
+        SELECT * FROM execution_monitoring
+        WHERE chain_id = #{chainId}
+          AND created_at &gt;= #{startTime}
+          AND created_at &lt;= #{endTime}
+        ORDER BY created_at DESC
+    </select>
+
+    <select id="selectByTenantIdAndTimeRange" resultMap="BaseResultMap">
+        SELECT * FROM execution_monitoring
+        WHERE tenant_id = #{tenantId}
+          AND created_at &gt;= #{startTime}
+          AND created_at &lt;= #{endTime}
+        ORDER BY created_at DESC
+    </select>
+
+    <select id="countExecutions" resultType="long">
+        SELECT COUNT(*) FROM execution_monitoring
+        WHERE tenant_id = #{tenantId}
+          AND chain_id = #{chainId}
+          AND created_at &gt;= #{startTime}
+          AND created_at &lt;= #{endTime}
+    </select>
+
+    <delete id="deleteRecordsBefore">
+        DELETE FROM execution_monitoring
+        WHERE created_at &lt; #{beforeTime}
+    </delete>
+
+</mapper>
