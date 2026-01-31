@@ -1,0 +1,166 @@
+# ============================================
+# Java / Maven
+# ============================================
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# ============================================
+# IDE - IntelliJ IDEA
+# ============================================
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+.idea_modules/
+
+# ============================================
+# IDE - Eclipse
+# ============================================
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+.recommenders
+
+# ============================================
+# IDE - VSCode
+# ============================================
+.vscode/
+*.code-workspace
+
+# ============================================
+# OS - macOS
+# ============================================
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# ============================================
+# OS - Windows
+# ============================================
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# ============================================
+# Logs
+# ============================================
+logs/
+*.log
+log/
+
+# ============================================
+# Spring Boot
+# ============================================
+application-local.yml
+application-local.properties
+*.local.yml
+*.local.properties
+
+# ============================================
+# Spring Cloud / Nacos
+# ============================================
+nacos/
+config/
+
+# ============================================
+# Database
+# ============================================
+*.db
+*.sqlite
+
+# ============================================
+# Temporary Files
+# ============================================
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+.~lock.*
+
+# ============================================
+# Build Tools
+# ============================================
+gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# ============================================
+# Test Coverage
+# ============================================
+jacoco/
+.jacoco/
+*.exec
+
+# ============================================
+# MyBatis Generator
+# ============================================
+generated/
+
+# ============================================
+# Backup Files
+# ============================================
+*.backup
+*.bak
+*.orig
+
+# ============================================
+# Package Files
+# ============================================
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# ============================================
+# Virtual Machine crash logs
+# ============================================
+hs_err_pid*
+replay_pid*
+
+# ============================================
+# Maven Wrapper (可选 - 如果项目使用 wrapper)
+# ============================================
+# .mvn/wrapper/maven-wrapper.jar
+
+# ============================================
+# Node.js (如果项目包含前端)
+# ============================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+dist/
+
+# ============================================
+# Custom - 项目特定忽略
+# ============================================
+# 本地环境配置
+# src/main/resources/application-local.yml
+
+# 数据库初始化数据（保留 schema，忽略 data）
+# src/main/resources/data.sql
+
+# 临时测试文件
+# temp/
+# tmp/

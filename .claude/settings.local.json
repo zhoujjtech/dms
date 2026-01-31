@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(openspec:*)"
+      "Bash(openspec:*)",
+      "Bash(mvn:*)",
+      "Bash(git add:*)"
     ]
   }
 }
