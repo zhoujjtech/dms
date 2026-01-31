@@ -42,6 +42,19 @@ public class SubChainController {
     }
 
     /**
+     * 查询子流程详情
+     * GET /api/subchains/{id}
+     */
+    @GetMapping("/{id}")
+    public ResponseEntity<FlowSubChain> getSubChain(@PathVariable Long id) {
+        log.info("GET /api/subchains/{}", id);
+
+        FlowSubChain subChain = subChainApplicationService.getSubChain(id);
+
+        return ResponseEntity.ok(subChain);
+    }
+
+    /**
      * 更新子流程
      * PUT /api/subchains/{id}
      */

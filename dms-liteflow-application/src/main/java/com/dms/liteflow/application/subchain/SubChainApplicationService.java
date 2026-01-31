@@ -91,6 +91,16 @@ public class SubChainApplicationService {
     }
 
     /**
+     * 查询子流程详情
+     */
+    public FlowSubChain getSubChain(Long id) {
+        log.info("Getting sub chain: {}", id);
+
+        return flowSubChainRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Sub chain not found: " + id));
+    }
+
+    /**
      * 查询租户的所有子流程
      */
     public List<FlowSubChain> getSubChainsByTenant(Long tenantId) {
