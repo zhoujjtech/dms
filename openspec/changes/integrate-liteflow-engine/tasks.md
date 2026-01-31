@@ -160,10 +160,10 @@
 - [x] 12.1 创建 ComponentController 控制器
 - [x] 12.2 实现创建组件 API (POST /api/components)
 - [x] 12.3 实现查询组件列表 API (GET /api/components)
-- [ ] 12.4 实现查询组件详情 API (GET /api/components/{id})
-- [ ] 12.5 实现更新组件 API (PUT /api/components/{id})
+- [x] 12.4 实现查询组件详情 API (GET /api/components/{id})
+- [x] 12.5 实现更新组件 API (PUT /api/components/{id})
 - [x] 12.6 实现删除组件 API (DELETE /api/components/{id})
-- [ ] 12.7 实现组件启用/禁用 API
+- [x] 12.7 实现组件启用/禁用 API
 - [ ] 12.8 创建 ComponentDTO 模型
 - [ ] 12.9 创建 ComponentVO 模型
 - [ ] 12.10 实现 API 参数验证
@@ -177,7 +177,7 @@
 - [x] 13.4 实现查询流程链详情 API (GET /api/chains/{id})
 - [x] 13.5 实现更新流程链 API (PUT /api/chains/{id})
 - [x] 13.6 实现删除流程链 API (DELETE /api/chains/{id})
-- [ ] 13.7 实现流程链启用/禁用 API
+- [x] 13.7 实现流程链启用/禁用 API
 - [ ] 13.8 创建 ChainDTO 模型
 - [ ] 13.9 创建 ChainVO 模型
 - [ ] 13.10 实现 API 参数验证
