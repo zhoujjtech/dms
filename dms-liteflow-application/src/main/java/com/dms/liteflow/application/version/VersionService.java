@@ -171,6 +171,23 @@ public class VersionService {
     }
 
     /**
+     * 更新版本状态
+     *
+     * @param versionId 版本ID
+     * @param status    新状态
+     */
+    @Transactional
+    public void updateVersionStatus(Long versionId, String status) {
+        log.info("Updating version {} status to: {}", versionId, status);
+
+        ConfigVersion configVersion = configVersionRepository.findById(versionId)
+                .orElseThrow(() -> new IllegalArgumentException("Version not found: " + versionId));
+
+        configVersion.setStatus(ComponentStatus.fromCode(status));
+        configVersionRepository.save(configVersion);
+    }
+
+    /**
      * 归档版本
      *
      * @param tenantId   租户ID

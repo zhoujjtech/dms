@@ -77,6 +77,22 @@ public class VersionController {
     }
 
     /**
+     * 更新版本状态
+     * PUT /api/versions/{versionId}/status
+     */
+    @PutMapping("/{versionId}/status")
+    public ResponseEntity<Void> updateVersionStatus(
+            @PathVariable Long versionId,
+            @RequestParam String status
+    ) {
+        log.info("PUT /api/versions/{}/status - status: {}", versionId, status);
+
+        versionService.updateVersionStatus(versionId, status);
+
+        return ResponseEntity.ok().build();
+    }
+
+    /**
      * 归档版本
      * POST /api/versions/{configType}/{configId}/versions/{version}/archive
      */
