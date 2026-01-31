@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dms.liteflow.infrastructure.persistence.mapper.RuleComponentMapper">
+
+    <resultMap id="BaseResultMap" type="com.dms.liteflow.infrastructure.persistence.entity.RuleComponentEntity">
+        <id column="id" property="id"/>
+        <result column="tenant_id" property="tenantId"/>
+        <result column="component_id" property="componentId"/>
+        <result column="component_name" property="componentName"/>
+        <result column="description" property="description"/>
+        <result column="component_type" property="componentType"/>
+        <result column="content" property="content"/>
+        <result column="status" property="status"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.dms.liteflow.infrastructure.persistence.entity.RuleComponentEntity">
+        INSERT INTO rule_component (
+            tenant_id, component_id, component_name, description,
+            component_type, content, status, created_at, updated_at
+        ) VALUES (
+            #{tenantId}, #{componentId}, #{componentName}, #{description},
+            #{componentType}, #{content}, #{status}, NOW(), NOW()
+        )
+    </insert>
+
+    <update id="updateById" parameterType="com.dms.liteflow.infrastructure.persistence.entity.RuleComponentEntity">
+        UPDATE rule_component
+        SET component_name = #{componentName},
+            description = #{description},
+            content = #{content},
+            status = #{status},
+            updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT * FROM rule_component
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectByComponentId" resultMap="BaseResultMap">
+        SELECT * FROM rule_component
+        WHERE component_id = #{componentId}
+    </select>
+
+    <select id="selectByTenantId" resultMap="BaseResultMap">
+        SELECT * FROM rule_component
+        WHERE tenant_id = #{tenantId}
+        ORDER BY created_at DESC
+    </select>
+
+    <select id="selectByTenantIdAndStatus" resultMap="BaseResultMap">
+        SELECT * FROM rule_component
+        WHERE tenant_id = #{tenantId}
+          AND status = #{status}
+        ORDER BY created_at DESC
+    </select>
+
+    <select id="selectByTenantIdAndType" resultMap="BaseResultMap">
+        SELECT * FROM rule_component
+        WHERE tenant_id = #{tenantId}
+          AND component_type = #{componentType}
+        ORDER BY created_at DESC
+    </select>
+
+    <select id="countByComponentId" resultType="int">
+        SELECT COUNT(*)
+        FROM rule_component
+        WHERE component_id = #{componentId}
+    </select>
+
+    <delete id="deleteById">
+        DELETE FROM rule_component
+        WHERE id = #{id}
+    </delete>
+
+    <select id="countByTenantId" resultType="long">
+        SELECT COUNT(*)
+        FROM rule_component
+        WHERE tenant_id = #{tenantId}
+    </select>
+
+</mapper>

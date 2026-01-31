@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dms.liteflow.infrastructure.persistence.mapper.FlowChainMapper">
+
+    <resultMap id="BaseResultMap" type="com.dms.liteflow.infrastructure.persistence.entity.FlowChainEntity">
+        <id column="id" property="id"/>
+        <result column="tenant_id" property="tenantId"/>
+        <result column="chain_name" property="chainName"/>
+        <result column="chain_code" property="chainCode"/>
+        <result column="description" property="description"/>
+        <result column="config_type" property="configType"/>
+        <result column="status" property="status"/>
+        <result column="current_version" property="currentVersion"/>
+        <result column="transactional" property="transactional"/>
+        <result column="transaction_timeout" property="transactionTimeout"/>
+        <result column="transaction_propagation" property="transactionPropagation"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+        <result column="deleted_at" property="deletedAt"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.dms.liteflow.infrastructure.persistence.entity.FlowChainEntity">
+        INSERT INTO flow_chain (
+            tenant_id, chain_name, chain_code, description, config_type,
+            status, current_version, transactional, transaction_timeout,
+            transaction_propagation, created_at, updated_at
+        ) VALUES (
+            #{tenantId}, #{chainName}, #{chainCode}, #{description}, #{configType},
+            #{status}, #{currentVersion}, #{transactional}, #{transactionTimeout},
+            #{transactionPropagation}, NOW(), NOW()
+        )
+    </insert>
+
+    <update id="updateById" parameterType="com.dms.liteflow.infrastructure.persistence.entity.FlowChainEntity">
+        UPDATE flow_chain
+        SET chain_name = #{chainName},
+            chain_code = #{chainCode},
+            description = #{description},
+            status = #{status},
+            current_version = #{currentVersion},
+            updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT * FROM flow_chain
+        WHERE id = #{id}
+          AND deleted_at IS NULL
+    </select>
+
+    <select id="selectByTenantId" resultMap="BaseResultMap">
+        SELECT * FROM flow_chain
+        WHERE tenant_id = #{tenantId}
+          AND deleted_at IS NULL
+        ORDER BY created_at DESC
+    </select>
+
+    <select id="selectByTenantIdAndStatus" resultMap="BaseResultMap">
+        SELECT * FROM flow_chain
+        WHERE tenant_id = #{tenantId}
+          AND status = #{status}
+          AND deleted_at IS NULL
+        ORDER BY created_at DESC
+    </select>
+
+    <select id="selectByTenantIdAndName" resultMap="BaseResultMap">
+        SELECT * FROM flow_chain
+        WHERE tenant_id = #{tenantId}
+          AND chain_name = #{chainName}
+          AND deleted_at IS NULL
+        LIMIT 1
+    </select>
+
+    <select id="countByTenantIdAndName" resultType="int">
+        SELECT COUNT(*)
+        FROM flow_chain
+        WHERE tenant_id = #{tenantId}
+          AND chain_name = #{chainName}
+          AND deleted_at IS NULL
+    </select>
+
+    <update id="softDeleteById">
+        UPDATE flow_chain
+        SET deleted_at = NOW(),
+            updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <select id="countByTenantId" resultType="long">
+        SELECT COUNT(*)
+        FROM flow_chain
+        WHERE tenant_id = #{tenantId}
+          AND deleted_at IS NULL
+    </select>
+
+</mapper>

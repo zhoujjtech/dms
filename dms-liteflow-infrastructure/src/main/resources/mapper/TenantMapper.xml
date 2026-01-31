@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dms.liteflow.infrastructure.persistence.mapper.TenantMapper">
+
+    <resultMap id="BaseResultMap" type="com.dms.liteflow.infrastructure.persistence.entity.TenantEntity">
+        <id column="id" property="id"/>
+        <result column="tenant_code" property="tenantCode"/>
+        <result column="tenant_name" property="tenantName"/>
+        <result column="status" property="status"/>
+        <result column="max_chains" property="maxChains"/>
+        <result column="max_components" property="maxComponents"/>
+        <result column="executor_cached" property="executorCached"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+        <result column="deleted_at" property="deletedAt"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.dms.liteflow.infrastructure.persistence.entity.TenantEntity">
+        INSERT INTO tenant_info (
+            tenant_code, tenant_name, status, max_chains, max_components,
+            executor_cached, created_at, updated_at
+        ) VALUES (
+            #{tenantCode}, #{tenantName}, #{status}, #{maxChains}, #{maxComponents},
+            #{executorCached}, NOW(), NOW()
+        )
+    </insert>
+
+    <update id="updateById" parameterType="com.dms.liteflow.infrastructure.persistence.entity.TenantEntity">
+        UPDATE tenant_info
+        SET tenant_name = #{tenantName},
+            status = #{status},
+            max_chains = #{maxChains},
+            max_components = #{maxComponents},
+            executor_cached = #{executorCached},
+            updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT * FROM tenant_info
+        WHERE id = #{id}
+          AND deleted_at IS NULL
+    </select>
+
+    <select id="selectByTenantCode" resultMap="BaseResultMap">
+        SELECT * FROM tenant_info
+        WHERE tenant_code = #{tenantCode}
+          AND deleted_at IS NULL
+        LIMIT 1
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT * FROM tenant_info
+        WHERE deleted_at IS NULL
+        ORDER BY created_at DESC
+    </select>
+
+    <select id="countByTenantCode" resultType="int">
+        SELECT COUNT(*)
+        FROM tenant_info
+        WHERE tenant_code = #{tenantCode}
+          AND deleted_at IS NULL
+    </select>
+
+    <update id="softDeleteById">
+        UPDATE tenant_info
+        SET deleted_at = NOW(),
+            updated_at = NOW(),
+            status = 'DELETED'
+        WHERE id = #{id}
+    </update>
+
+</mapper>
