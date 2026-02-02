@@ -91,4 +91,18 @@
         WHERE tenant_id = #{tenantId}
     </select>
 
+    <!-- ========== LiteFlow SQL 插件专用查询 ========== -->
+
+    <select id="selectPublishedComponentsForLiteFlow" resultMap="BaseResultMap">
+        SELECT id, tenant_id, component_id, component_name, description, component_type,
+               component_code, status, application_name, script_enable, language,
+               created_at, updated_at
+        FROM rule_component
+        WHERE application_name = #{applicationName}
+          AND tenant_id = #{tenantId}
+          AND status = 'PUBLISHED'
+          AND script_enable = 1
+        ORDER BY created_at DESC
+    </select>
+
 </mapper>

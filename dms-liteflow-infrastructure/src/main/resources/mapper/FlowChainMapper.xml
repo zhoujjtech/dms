@@ -99,4 +99,20 @@
           AND deleted_at IS NULL
     </select>
 
+    <!-- ========== LiteFlow SQL 插件专用查询 ========== -->
+
+    <select id="selectPublishedChainsForLiteFlow" resultMap="BaseResultMap">
+        SELECT id, tenant_id, chain_name, chain_code, description, config_type, status,
+               current_version, transactional, transaction_timeout, transaction_propagation,
+               application_name, chain_enable, namespace,
+               created_at, updated_at, deleted_at
+        FROM flow_chain
+        WHERE application_name = #{applicationName}
+          AND tenant_id = #{tenantId}
+          AND status = 'PUBLISHED'
+          AND chain_enable = 1
+          AND deleted_at IS NULL
+        ORDER BY created_at DESC
+    </select>
+
 </mapper>

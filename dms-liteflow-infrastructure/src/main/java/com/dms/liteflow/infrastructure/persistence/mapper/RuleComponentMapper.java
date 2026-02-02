@@ -65,4 +65,17 @@ public interface RuleComponentMapper {
      * 统计租户下的组件数量
      */
     long countByTenantId(@Param("tenantId") Long tenantId);
+
+    // ========== LiteFlow SQL 插件专用查询方法 ==========
+
+    /**
+     * 查询已发布的脚本组件配置（用于 LiteFlow SQL 插件）
+     * <p>
+     * 按 application_name, tenant_id, status, script_enable 过滤
+     * </p>
+     */
+    List<RuleComponentEntity> selectPublishedComponentsForLiteFlow(
+            @Param("applicationName") String applicationName,
+            @Param("tenantId") Long tenantId
+    );
 }
