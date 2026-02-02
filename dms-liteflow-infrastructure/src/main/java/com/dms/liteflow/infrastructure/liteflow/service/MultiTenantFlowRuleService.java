@@ -9,7 +9,6 @@ import com.yomahub.liteflow.slot.DefaultContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.PostConstruct;
@@ -19,7 +18,7 @@ import java.util.List;
  * 多租户流程规则管理服务
  * <p>
  * 负责从数据库动态加载和管理多租户的流程规则
- * 定时刷新规则配置到 FlowExecutor
+ * 定时刷新已由 ElasticJob 接管（参见 {@link com.dms.liteflow.infrastructure.schedule.job.RuleRefreshJob}）
  * </p>
  */
 @Slf4j
@@ -43,9 +42,12 @@ public class MultiTenantFlowRuleService {
     }
 
     /**
-     * 定时刷新所有租户的规则（每60秒）
+     * 刷新所有租户的规则
+     * <p>
+     * 注意：定时调度已由 ElasticJob 接管（参见 {@link com.dms.liteflow.infrastructure.schedule.job.RuleRefreshJob}）
+     * 此方法保留用于手动触发刷新
+     * </p>
      */
-    @Scheduled(fixedRate = 60, timeUnit = java.util.concurrent.TimeUnit.SECONDS)
     public void refreshAllRules() {
         log.debug("Refreshing all tenant rules");
         loadAllTenantRules();

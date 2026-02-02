@@ -3,7 +3,6 @@ package com.dms.liteflow.application.scheduled;
 import com.dms.liteflow.application.monitoring.MonitoringQueryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -11,21 +10,25 @@ import java.time.LocalDateTime;
 /**
  * 监控数据清理调度器
  * <p>
- * 定期清理过期的监控数据
+ * 已废弃：使用 ElasticJob 分布式任务替代（参见 cleanup 包下的 Job 类）
+ * 保留此类仅作为手动清理的工具类
  * </p>
+ * @deprecated 使用 {@link com.dms.liteflow.application.scheduled.job.CleanupExecutionJob} 等替代
  */
 @Slf4j
 @Component
 @RequiredArgsConstructor
+@Deprecated
 public class MonitoringDataCleanupScheduler {
 
     private final MonitoringQueryService monitoringQueryService;
 
     /**
-     * 清理7天前的原始执行数据
-     * 每天凌晨2点执行
+     * 手动清理7天前的原始执行数据
+     * <p>
+     * 注意：定时调度已由 ElasticJob 接管
+     * </p>
      */
-    @Scheduled(cron = "0 0 2 * * ?")
     public void cleanupOldExecutionRecords() {
         log.info("Starting cleanup of old execution records");
 
@@ -39,10 +42,11 @@ public class MonitoringDataCleanupScheduler {
     }
 
     /**
-     * 清理30天前的小时级统计数据
-     * 每周日凌晨3点执行
+     * 手动清理30天前的小时级统计数据
+     * <p>
+     * 注意：定时调度已由 ElasticJob 接管
+     * </p>
      */
-    @Scheduled(cron = "0 0 3 ? * SUN")
     public void cleanupHourlyStats() {
         log.info("Starting cleanup of hourly stats");
 
@@ -55,10 +59,11 @@ public class MonitoringDataCleanupScheduler {
     }
 
     /**
-     * 清理1年前的日级统计数据
-     * 每月1号凌晨4点执行
+     * 手动清理1年前的日级统计数据
+     * <p>
+     * 注意：定时调度已由 ElasticJob 接管
+     * </p>
      */
-    @Scheduled(cron = "0 0 4 1 * ?")
     public void cleanupDailyStats() {
         log.info("Starting cleanup of daily stats");
 

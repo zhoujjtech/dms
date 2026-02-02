@@ -50,6 +50,20 @@ spring:
           key-prefix: "dms:cache:"  # 统一前缀，支持多租户
           use-key-prefix: true
 
+# XXL-JOB 分布式调度配置
+xxl:
+  job:
+    admin:
+      addresses: http://localhost:8080/xxl-job-admin  # XXL-JOB 调度中心地址
+    executor:
+      appname: dms-liteflow  # 执行器应用名称
+      address:  # 执行器地址（自动注册）
+      ip:  # 执行器IP（自动获取）
+      port: 9999  # 执行器端口
+      logpath: ./xxl-job/logs  # 日志路径
+      logretentiondays: 30  # 日志保留天数
+    accessToken:  # 访问令牌（如果调度中心配置了）
+
   jpa:
     hibernate:
       ddl-auto: none
