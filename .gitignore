@@ -75,7 +75,6 @@ application-local.properties
 # Spring Cloud / Nacos
 # ============================================
 nacos/
-config/
 
 # ============================================
 # Database
