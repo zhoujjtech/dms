@@ -1,0 +1,48 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: dms-liteflow
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/dms_liteflow_test?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: root
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.dms.liteflow.infrastructure.persistence.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+
+liteflow:
+  # 使用 SQL 插件作为规则源（数据库动态配置）
+  rule-source: sql
+  print-banner: false
+
+  # SQL 插件配置
+  rule-source-ext-data-map:
+    applicationName: dms-liteflow
+    pollingEnabled: false  # 测试环境禁用轮询
+    pollingIntervalSeconds: 60
+    pollingStartSeconds: 60
+    sqlLogEnabled: true
+
+logging:
+  level:
+    root: INFO
+    com.dms.liteflow: DEBUG
+    com.yomahub.liteflow: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"

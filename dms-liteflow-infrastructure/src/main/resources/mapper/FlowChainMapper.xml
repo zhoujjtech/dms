@@ -14,6 +14,9 @@
         <result column="transactional" property="transactional"/>
         <result column="transaction_timeout" property="transactionTimeout"/>
         <result column="transaction_propagation" property="transactionPropagation"/>
+        <result column="application_name" property="applicationName"/>
+        <result column="chain_enable" property="chainEnable"/>
+        <result column="namespace" property="namespace"/>
         <result column="created_at" property="createdAt"/>
         <result column="updated_at" property="updatedAt"/>
         <result column="deleted_at" property="deletedAt"/>
@@ -23,11 +26,13 @@
         INSERT INTO flow_chain (
             tenant_id, chain_name, chain_code, description, config_type,
             status, current_version, transactional, transaction_timeout,
-            transaction_propagation, created_at, updated_at
+            transaction_propagation, application_name, chain_enable, namespace,
+            created_at, updated_at
         ) VALUES (
             #{tenantId}, #{chainName}, #{chainCode}, #{description}, #{configType},
             #{status}, #{currentVersion}, #{transactional}, #{transactionTimeout},
-            #{transactionPropagation}, NOW(), NOW()
+            #{transactionPropagation}, #{applicationName}, #{chainEnable}, #{namespace},
+            NOW(), NOW()
         )
     </insert>
 
@@ -59,6 +64,7 @@
         SELECT * FROM flow_chain
         WHERE tenant_id = #{tenantId}
           AND status = #{status}
+          AND chain_enable = 1
           AND deleted_at IS NULL
         ORDER BY created_at DESC
     </select>

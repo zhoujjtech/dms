@@ -22,8 +22,14 @@ public class RuleComponentEntity {
     private String componentName;
     private String description;
     private String componentType;
-    private String content;
+    private String content; // 对应数据库的 component_code 字段
     private String status;
+
+    // LiteFlow SQL 插件所需字段
+    private String applicationName;
+    private Integer scriptEnable;
+    private String language;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

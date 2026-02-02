@@ -44,9 +44,41 @@ mybatis:
     log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
 
 liteflow:
-  rule-source: configData
-  configData: classpath:flow/
+  # 使用 SQL 插件作为规则源（数据库动态配置）
+  rule-source: sql
   print-banner: true
+
+  # SQL 插件配置
+  rule-source-ext-data-map:
+    # 应用标识
+    applicationName: dms-liteflow
+
+    # 轮询配置
+    pollingEnabled: true
+    pollingIntervalSeconds: 60
+    pollingStartSeconds: 60
+
+    # SQL 日志
+    sqlLogEnabled: true
+
+    # flow_chain 表配置
+    chainTableName: flow_chain
+    chainApplicationNameField: application_name
+    chainNameField: chain_name
+    chainDescField: chain_desc
+    elDataField: chain_code
+    chainEnableField: chain_enable
+    namespaceField: namespace
+
+    # rule_component 表配置（脚本组件）
+    scriptTableName: rule_component
+    scriptApplicationNameField: application_name
+    scriptIdField: component_id
+    scriptNameField: component_name
+    scriptDataField: component_code
+    scriptTypeField: component_type
+    scriptLanguageField: language
+    scriptEnableField: script_enable
 
 springdoc:
   api-docs:

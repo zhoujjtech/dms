@@ -39,6 +39,7 @@
 
         <!-- LiteFlow -->
         <liteflow.version>2.12.4</liteflow.version>
+        <liteflow-rule-sql.version>2.15.0.2</liteflow-rule-sql.version>
 
         <!-- Database -->
         <mysql.version>8.0.33</mysql.version>
@@ -101,6 +102,12 @@
                 <groupId>com.yomahub</groupId>
                 <artifactId>liteflow-spring-boot-starter</artifactId>
                 <version>${liteflow.version}</version>
+            </dependency>
+            <!-- LiteFlow SQL Plugin -->
+            <dependency>
+                <groupId>com.yomahub</groupId>
+                <artifactId>liteflow-rule-sql</artifactId>
+                <version>${liteflow-rule-sql.version}</version>
             </dependency>
 
             <!-- MyBatis -->

@@ -27,6 +27,12 @@ public class FlowChainEntity {
     private Boolean transactional;
     private Integer transactionTimeout;
     private String transactionPropagation;
+
+    // LiteFlow SQL 插件所需字段
+    private String applicationName;
+    private Integer chainEnable;
+    private String namespace;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private LocalDateTime deletedAt;

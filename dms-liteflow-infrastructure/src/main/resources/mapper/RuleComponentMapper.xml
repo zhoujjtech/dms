@@ -9,8 +9,11 @@
         <result column="component_name" property="componentName"/>
         <result column="description" property="description"/>
         <result column="component_type" property="componentType"/>
-        <result column="content" property="content"/>
+        <result column="component_code" property="content"/>
         <result column="status" property="status"/>
+        <result column="application_name" property="applicationName"/>
+        <result column="script_enable" property="scriptEnable"/>
+        <result column="language" property="language"/>
         <result column="created_at" property="createdAt"/>
         <result column="updated_at" property="updatedAt"/>
     </resultMap>
@@ -18,10 +21,12 @@
     <insert id="insert" parameterType="com.dms.liteflow.infrastructure.persistence.entity.RuleComponentEntity">
         INSERT INTO rule_component (
             tenant_id, component_id, component_name, description,
-            component_type, content, status, created_at, updated_at
+            component_type, component_code, status, application_name,
+            script_enable, language, created_at, updated_at
         ) VALUES (
             #{tenantId}, #{componentId}, #{componentName}, #{description},
-            #{componentType}, #{content}, #{status}, NOW(), NOW()
+            #{componentType}, #{content}, #{status}, #{applicationName},
+            #{scriptEnable}, #{language}, NOW(), NOW()
         )
     </insert>
 
@@ -29,8 +34,11 @@
         UPDATE rule_component
         SET component_name = #{componentName},
             description = #{description},
-            content = #{content},
+            component_code = #{content},
             status = #{status},
+            application_name = #{applicationName},
+            script_enable = #{scriptEnable},
+            language = #{language},
             updated_at = NOW()
         WHERE id = #{id}
     </update>
@@ -55,6 +63,7 @@
         SELECT * FROM rule_component
         WHERE tenant_id = #{tenantId}
           AND status = #{status}
+          AND script_enable = 1
         ORDER BY created_at DESC
     </select>
 
