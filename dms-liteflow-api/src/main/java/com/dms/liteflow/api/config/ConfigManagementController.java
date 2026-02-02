@@ -1,6 +1,7 @@
 package com.dms.liteflow.api.config;
 
 import com.dms.liteflow.infrastructure.liteflow.FlowConfigService;
+import com.dms.liteflow.infrastructure.liteflow.service.MultiTenantFlowRuleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,6 +27,7 @@ import java.util.Map;
 public class ConfigManagementController {
 
     private final FlowConfigService flowConfigService;
+    private final MultiTenantFlowRuleService multiTenantFlowRuleService;
 
     /**
      * 手动刷新所有配置缓存
@@ -33,23 +35,27 @@ public class ConfigManagementController {
      * @return 刷新结果
      */
     @PostMapping("/refresh")
-    @Operation(summary = "刷新所有配置", description = "清除所有配置缓存，下次查询时重新从数据库加载")
+    @Operation(summary = "刷新所有配置", description = "清除所有配置缓存，重新从数据库加载规则")
     public ResponseEntity<Map<String, Object>> refreshAllConfigs() {
         log.info("Manual config refresh triggered");
 
         try {
+            // 清除缓存
             flowConfigService.clearAllCache();
+
+            // 重新加载规则到 FlowExecutor
+            multiTenantFlowRuleService.refreshAllRules();
 
             Map<String, Object> result = new HashMap<>();
             result.put("success", true);
-            result.put("message", "All config cache cleared successfully");
+            result.put("message", "All configs refreshed successfully");
             result.put("timestamp", System.currentTimeMillis());
 
             log.info("Manual config refresh completed successfully");
             return ResponseEntity.ok(result);
 
         } catch (Exception e) {
-            log.error("Failed to refresh config cache", e);
+            log.error("Failed to refresh config", e);
 
             Map<String, Object> result = new HashMap<>();
             result.put("success", false);
@@ -61,13 +67,13 @@ public class ConfigManagementController {
     }
 
     /**
-     * 刷新指定租户的配置缓存
+     * 刷新指定租户的配置
      *
      * @param tenantId 租户ID
      * @return 刷新结果
      */
     @PostMapping("/refresh/{tenantId}")
-    @Operation(summary = "刷新租户配置", description = "清除指定租户的配置缓存")
+    @Operation(summary = "刷新租户配置", description = "重新加载指定租户的流程规则")
     public ResponseEntity<Map<String, Object>> refreshTenantConfig(
             @Parameter(description = "租户ID", required = true)
             @PathVariable Long tenantId) {
@@ -87,12 +93,15 @@ public class ConfigManagementController {
                 return ResponseEntity.status(404).body(result);
             }
 
-            // 清除租户配置缓存
+            // 清除缓存
             flowConfigService.refreshConfig(tenantId);
+
+            // 重新加载规则
+            multiTenantFlowRuleService.refreshTenant(tenantId);
 
             Map<String, Object> result = new HashMap<>();
             result.put("success", true);
-            result.put("message", "Config cache cleared for tenant: " + tenantId);
+            result.put("message", "Config refreshed for tenant: " + tenantId);
             result.put("tenantId", tenantId);
             result.put("timestamp", System.currentTimeMillis());
 
@@ -100,7 +109,7 @@ public class ConfigManagementController {
             return ResponseEntity.ok(result);
 
         } catch (Exception e) {
-            log.error("Failed to refresh config cache for tenant: {}", tenantId, e);
+            log.error("Failed to refresh config for tenant: {}", tenantId, e);
 
             Map<String, Object> result = new HashMap<>();
             result.put("success", false);

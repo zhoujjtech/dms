@@ -44,41 +44,26 @@ mybatis:
     log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
 
 liteflow:
-  # 使用 SQL 插件作为规则源（数据库动态配置）
-  rule-source: sql
+  # 使用本地文件配置（启动时加载）
+  # 实际规则由 MultiTenantFlowRuleService 动态管理
+  rule-source: configData
+  configData: classpath:flow/
   print-banner: true
 
-  # SQL 插件配置
-  rule-source-ext-data-map:
-    # 应用标识
-    applicationName: dms-liteflow
+  # 启用多租户规则服务
+  multi-tenant-rule:
+    enabled: true
+    refresh-interval-seconds: 60
 
-    # 轮询配置
-    pollingEnabled: true
-    pollingIntervalSeconds: 60
-    pollingStartSeconds: 60
-
-    # SQL 日志
-    sqlLogEnabled: true
-
-    # flow_chain 表配置
-    chainTableName: flow_chain
-    chainApplicationNameField: application_name
-    chainNameField: chain_name
-    chainDescField: chain_desc
-    elDataField: chain_code
-    chainEnableField: chain_enable
-    namespaceField: namespace
-
-    # rule_component 表配置（脚本组件）
-    scriptTableName: rule_component
-    scriptApplicationNameField: application_name
-    scriptIdField: component_id
-    scriptNameField: component_name
-    scriptDataField: component_code
-    scriptTypeField: component_type
-    scriptLanguageField: language
-    scriptEnableField: script_enable
+  # SQL 插件配置（已禁用，保留供参考）
+  # rule-source-ext-data-map:
+  #   applicationName: dms-liteflow
+  #   pollingEnabled: true
+  #   pollingIntervalSeconds: 60
+  #   pollingStartSeconds: 60
+  #   sqlLogEnabled: true
+  #   chainTableName: flow_chain
+  #   ... (其他配置已注释)
 
 springdoc:
   api-docs:
