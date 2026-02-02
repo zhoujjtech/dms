@@ -47,10 +47,10 @@
             <artifactId>mysql-connector-j</artifactId>
         </dependency>
 
-        <!-- Caffeine Cache -->
+        <!-- Redis Cache (替换 Caffeine 本地缓存) -->
         <dependency>
-            <groupId>com.github.ben-manes.caffeine</groupId>
-            <artifactId>caffeine</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
 
         <!-- Spring Boot Cache Starter -->

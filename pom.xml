@@ -47,7 +47,7 @@
         <mybatis-spring-boot.version>3.0.3</mybatis-spring-boot.version>
 
         <!-- Cache -->
-        <caffeine.version>3.1.8</caffeine.version>
+        <!-- 已移除 Caffeine，改用 Redis 分布式缓存 -->
 
         <!-- Utils -->
         <java-diff.version>4.12</java-diff.version>
@@ -127,13 +127,6 @@
                 <groupId>com.mysql</groupId>
                 <artifactId>mysql-connector-j</artifactId>
                 <version>${mysql.version}</version>
-            </dependency>
-
-            <!-- Caffeine Cache -->
-            <dependency>
-                <groupId>com.github.ben-manes.caffeine</groupId>
-                <artifactId>caffeine</artifactId>
-                <version>${caffeine.version}</version>
             </dependency>
 
             <!-- Java Diff Utils -->

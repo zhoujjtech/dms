@@ -28,6 +28,28 @@ spring:
     username: root
     password: root
 
+  # Redis 配置（分布式缓存）
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password:
+      database: 0
+      timeout: 5000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+          max-wait: -1ms
+      cache:
+        type: redis
+        redis:
+          time-to-live: 300000  # 5分钟过期（毫秒）
+          cache-null-values: false
+          key-prefix: "dms:cache:"  # 统一前缀，支持多租户
+          use-key-prefix: true
+
   jpa:
     hibernate:
       ddl-auto: none
