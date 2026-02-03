@@ -125,3 +125,22 @@ logging:
     com.yomahub.liteflow: INFO
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+# Saga 分布式事务配置
+saga:
+  enabled: true
+
+# Saga 分布式事务配置
+saga:
+  enabled: true
+  default-timeout-ms: 300000
+  max-timeout-ms: 600000
+  compensation-retry-count: 3
+  redis-fallback-enabled: true
+  data-cleanup:
+    redis-retention-days: 1
+    mysql-archive-days: 90
+  alert:
+    compensation-failure-rate-threshold: 0.05
+    manual-intervention-threshold: 10
+    notification-types: email,slack

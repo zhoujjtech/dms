@@ -1,0 +1,15 @@
+# Saga 分布式事务配置
+saga:
+  enabled: true
+  default-timeout-ms: 300000  # 5分钟
+  max-timeout-ms: 600000      # 10分钟
+  compensation-retry-count: 3
+  compensation-retry-interval-ms: 1000
+  redis-fallback-enabled: true
+  data-cleanup:
+    redis-retention-days: 1
+    mysql-archive-days: 90
+  alert:
+    compensation-failure-rate-threshold: 0.05
+    manual-intervention-threshold: 10
+    notification-types: email,slack
