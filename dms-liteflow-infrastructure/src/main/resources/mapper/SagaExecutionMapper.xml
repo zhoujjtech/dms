@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dms.liteflow.infrastructure.saga.persistence.mapper.SagaExecutionMapper">
+
+    <resultMap id="BaseResultMap" type="com.dms.liteflow.infrastructure.saga.persistence.entity.SagaExecutionEntity">
+        <id column="id" property="id"/>
+        <result column="execution_id" property="executionId"/>
+        <result column="tenant_id" property="tenantId"/>
+        <result column="chain_name" property="chainName"/>
+        <result column="status" property="status"/>
+        <result column="current_step_index" property="currentStepIndex"/>
+        <result column="failure_reason" property="failureReason"/>
+        <result column="input_data" property="inputData"/>
+        <result column="output_data" property="outputData"/>
+        <result column="execution_stack" property="executionStack"/>
+        <result column="started_at" property="startedAt"/>
+        <result column="completed_at" property="completedAt"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+        <result column="version" property="version"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, execution_id, tenant_id, chain_name, status, current_step_index,
+        failure_reason, input_data, output_data, execution_stack,
+        started_at, completed_at, created_at, updated_at, version
+    </sql>
+
+    <insert id="insert" parameterType="com.dms.liteflow.infrastructure.saga.persistence.entity.SagaExecutionEntity" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO saga_execution (
+            execution_id, tenant_id, chain_name, status, current_step_index,
+            failure_reason, input_data, output_data, execution_stack,
+            started_at, completed_at, created_at, updated_at, version
+        ) VALUES (
+            #{executionId}, #{tenantId}, #{chainName}, #{status}, #{currentStepIndex},
+            #{failureReason}, #{inputData}, #{outputData}, #{executionStack},
+            #{startedAt}, #{completedAt}, #{createdAt}, #{updatedAt}, #{version}
+        )
+    </insert>
+
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM saga_execution
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectByExecutionId" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM saga_execution
+        WHERE execution_id = #{executionId}
+    </select>
+
+    <select id="selectByTenantId" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM saga_execution
+        WHERE tenant_id = #{tenantId}
+        ORDER BY started_at DESC
+    </select>
+
+    <select id="selectByTenantIdAndStatus" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM saga_execution
+        WHERE tenant_id = #{tenantId} AND status = #{status}
+        ORDER BY started_at DESC
+    </select>
+
+    <select id="selectByStatus" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM saga_execution
+        WHERE status = #{status}
+        ORDER BY started_at DESC
+    </select>
+
+    <update id="updateStatus">
+        UPDATE saga_execution
+        SET status = #{newStatus},
+            updated_at = NOW(),
+            version = version + 1
+        WHERE execution_id = #{executionId}
+          AND status = #{currentStatus}
+          AND version = #{version}
+    </update>
+
+    <update id="update" parameterType="com.dms.liteflow.infrastructure.saga.persistence.entity.SagaExecutionEntity">
+        UPDATE saga_execution
+        SET status = #{status},
+            current_step_index = #{currentStepIndex},
+            failure_reason = #{failureReason},
+            input_data = #{inputData},
+            output_data = #{outputData},
+            execution_stack = #{executionStack},
+            completed_at = #{completedAt},
+            updated_at = NOW(),
+            version = version + 1
+        WHERE id = #{id}
+          AND version = #{version}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM saga_execution WHERE id = #{id}
+    </delete>
+
+    <delete id="deleteByExecutionId">
+        DELETE FROM saga_execution WHERE execution_id = #{executionId}
+    </delete>
+
+    <select id="countByTenantId" resultType="long">
+        SELECT COUNT(*) FROM saga_execution WHERE tenant_id = #{tenantId}
+    </select>
+
+    <select id="countByStatus" resultType="long">
+        SELECT COUNT(*) FROM saga_execution WHERE status = #{status}
+    </select>
+
+    <select id="selectExpiredForCleanup" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM saga_execution
+        WHERE status = #{status}
+          AND completed_at &lt; #{beforeTime}
+        ORDER BY completed_at
+        LIMIT 1000
+    </select>
+
+    <select id="selectByPage" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM saga_execution
+        WHERE 1=1
+        <if test="tenantId != null">
+            AND tenant_id = #{tenantId}
+        </if>
+        <if test="chainName != null and chainName != ''">
+            AND chain_name = #{chainName}
+        </if>
+        <if test="status != null and status != ''">
+            AND status = #{status}
+        </if>
+        <if test="startTime != null">
+            AND started_at &gt;= #{startTime}
+        </if>
+        <if test="endTime != null">
+            AND started_at &lt;= #{endTime}
+        </if>
+        ORDER BY started_at DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <select id="selectByTenantIdWithFilters" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM saga_execution
+        WHERE tenant_id = #{tenantId}
+        <if test="status != null and status != ''">
+            AND status = #{status}
+        </if>
+        <if test="chainName != null and chainName != ''">
+            AND chain_name = #{chainName}
+        </if>
+        <if test="startTime != null">
+            AND started_at &gt;= #{startTime}
+        </if>
+        <if test="endTime != null">
+            AND started_at &lt;= #{endTime}
+        </if>
+        ORDER BY started_at DESC
+        LIMIT #{offset}, #{size}
+    </select>
+
+    <select id="countByTenantIdWithFilters" resultType="int">
+        SELECT COUNT(*)
+        FROM saga_execution
+        WHERE tenant_id = #{tenantId}
+        <if test="status != null and status != ''">
+            AND status = #{status}
+        </if>
+        <if test="chainName != null and chainName != ''">
+            AND chain_name = #{chainName}
+        </if>
+        <if test="startTime != null">
+            AND started_at &gt;= #{startTime}
+        </if>
+        <if test="endTime != null">
+            AND started_at &lt;= #{endTime}
+        </if>
+    </select>
+
+</mapper>

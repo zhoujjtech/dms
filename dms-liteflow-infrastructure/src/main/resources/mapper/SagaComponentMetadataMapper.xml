@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dms.liteflow.infrastructure.saga.persistence.mapper.SagaComponentMetadataMapper">
+
+    <resultMap id="BaseResultMap" type="com.dms.liteflow.infrastructure.saga.persistence.entity.SagaComponentMetadataEntity">
+        <id column="id" property="id"/>
+        <result column="tenant_id" property="tenantId"/>
+        <result column="component_name" property="componentName"/>
+        <result column="compensate_component" property="compensateComponent"/>
+        <result column="needs_compensation" property="needsCompensation"/>
+        <result column="default_failure_strategy" property="defaultFailureStrategy"/>
+        <result column="timeout_ms" property="timeoutMs"/>
+        <result column="metadata" property="metadata"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, tenant_id, component_name, compensate_component, needs_compensation,
+        default_failure_strategy, timeout_ms, metadata, created_at, updated_at
+    </sql>
+
+    <insert id="insert" parameterType="com.dms.liteflow.infrastructure.saga.persistence.entity.SagaComponentMetadataEntity" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO saga_component_metadata (
+            tenant_id, component_name, compensate_component, needs_compensation,
+            default_failure_strategy, timeout_ms, metadata, created_at, updated_at
+        ) VALUES (
+            #{tenantId}, #{componentName}, #{compensateComponent}, #{needsCompensation},
+            #{defaultFailureStrategy}, #{timeoutMs}, #{metadata}, #{createdAt}, #{updatedAt}
+        )
+        ON DUPLICATE KEY UPDATE
+            compensate_component = VALUES(compensate_component),
+            needs_compensation = VALUES(needs_compensation),
+            default_failure_strategy = VALUES(default_failure_strategy),
+            timeout_ms = VALUES(timeout_ms),
+            metadata = VALUES(metadata),
+            updated_at = NOW()
+    </insert>
+
+    <insert id="insertBatch">
+        INSERT INTO saga_component_metadata (
+            tenant_id, component_name, compensate_component, needs_compensation,
+            default_failure_strategy, timeout_ms, metadata, created_at, updated_at
+        ) VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.tenantId}, #{item.componentName}, #{item.compensateComponent}, #{item.needsCompensation},
+            #{item.defaultFailureStrategy}, #{item.timeoutMs}, #{item.metadata}, #{item.createdAt}, #{item.updatedAt})
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+            compensate_component = VALUES(compensate_component),
+            needs_compensation = VALUES(needs_compensation),
+            default_failure_strategy = VALUES(default_failure_strategy),
+            timeout_ms = VALUES(timeout_ms),
+            metadata = VALUES(metadata),
+            updated_at = NOW()
+    </insert>
+
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM saga_component_metadata
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectByTenantIdAndComponentName" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM saga_component_metadata
+        WHERE tenant_id = #{tenantId} AND component_name = #{componentName}
+    </select>
+
+    <select id="selectByTenantId" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM saga_component_metadata
+        WHERE tenant_id = #{tenantId}
+        ORDER BY component_name
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM saga_component_metadata
+        ORDER BY tenant_id, component_name
+    </select>
+
+    <select id="selectByComponentName" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM saga_component_metadata
+        WHERE component_name = #{componentName}
+        ORDER BY tenant_id
+    </select>
+
+    <update id="update" parameterType="com.dms.liteflow.infrastructure.saga.persistence.entity.SagaComponentMetadataEntity">
+        UPDATE saga_component_metadata
+        SET compensate_component = #{compensateComponent},
+            needs_compensation = #{needsCompensation},
+            default_failure_strategy = #{defaultFailureStrategy},
+            timeout_ms = #{timeoutMs},
+            metadata = #{metadata},
+            updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateByTenantIdAndComponentName" parameterType="com.dms.liteflow.infrastructure.saga.persistence.entity.SagaComponentMetadataEntity">
+        UPDATE saga_component_metadata
+        SET compensate_component = #{compensateComponent},
+            needs_compensation = #{needsCompensation},
+            default_failure_strategy = #{defaultFailureStrategy},
+            timeout_ms = #{timeoutMs},
+            metadata = #{metadata},
+            updated_at = NOW()
+        WHERE tenant_id = #{tenantId} AND component_name = #{componentName}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM saga_component_metadata WHERE id = #{id}
+    </delete>
+
+    <delete id="deleteByTenantIdAndComponentName">
+        DELETE FROM saga_component_metadata
+        WHERE tenant_id = #{tenantId} AND component_name = #{componentName}
+    </delete>
+
+    <delete id="deleteByTenantId">
+        DELETE FROM saga_component_metadata WHERE tenant_id = #{tenantId}
+    </delete>
+
+    <select id="existsByTenantIdAndComponentName" resultType="boolean">
+        SELECT COUNT(*) > 0
+        FROM saga_component_metadata
+        WHERE tenant_id = #{tenantId} AND component_name = #{componentName}
+    </select>
+
+</mapper>

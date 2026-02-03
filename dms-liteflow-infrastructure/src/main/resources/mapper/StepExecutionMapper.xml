@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dms.liteflow.infrastructure.saga.persistence.mapper.StepExecutionMapper">
+
+    <resultMap id="BaseResultMap" type="com.dms.liteflow.infrastructure.saga.persistence.entity.StepExecutionEntity">
+        <id column="id" property="id"/>
+        <result column="execution_id" property="executionId"/>
+        <result column="step_id" property="stepId"/>
+        <result column="component_name" property="componentName"/>
+        <result column="status" property="status"/>
+        <result column="input_data" property="inputData"/>
+        <result column="output_data" property="outputData"/>
+        <result column="compensate_component" property="compensateComponent"/>
+        <result column="needs_compensation" property="needsCompensation"/>
+        <result column="error_code" property="errorCode"/>
+        <result column="error_message" property="errorMessage"/>
+        <result column="stack_trace" property="stackTrace"/>
+        <result column="executed_at" property="executedAt"/>
+        <result column="compensated_at" property="compensatedAt"/>
+        <result column="created_at" property="createdAt"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, execution_id, step_id, component_name, status, input_data, output_data,
+        compensate_component, needs_compensation, error_code, error_message,
+        stack_trace, executed_at, compensated_at, created_at
+    </sql>
+
+    <insert id="insert" parameterType="com.dms.liteflow.infrastructure.saga.persistence.entity.StepExecutionEntity" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO saga_step_execution (
+            execution_id, step_id, component_name, status, input_data, output_data,
+            compensate_component, needs_compensation, error_code, error_message,
+            stack_trace, executed_at, compensated_at, created_at
+        ) VALUES (
+            #{executionId}, #{stepId}, #{componentName}, #{status}, #{inputData}, #{outputData},
+            #{compensateComponent}, #{needsCompensation}, #{errorCode}, #{errorMessage},
+            #{stackTrace}, #{executedAt}, #{compensatedAt}, #{createdAt}
+        )
+    </insert>
+
+    <insert id="insertBatch">
+        INSERT INTO saga_step_execution (
+            execution_id, step_id, component_name, status, input_data, output_data,
+            compensate_component, needs_compensation, error_code, error_message,
+            stack_trace, executed_at, compensated_at, created_at
+        ) VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.executionId}, #{item.stepId}, #{item.componentName}, #{item.status}, #{item.inputData}, #{item.outputData},
+            #{item.compensateComponent}, #{item.needsCompensation}, #{item.errorCode}, #{item.errorMessage},
+            #{item.stackTrace}, #{item.executedAt}, #{item.compensatedAt}, #{item.createdAt})
+        </foreach>
+    </insert>
+
+    <select id="selectById" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM saga_step_execution
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectByExecutionId" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM saga_step_execution
+        WHERE execution_id = #{executionId}
+        ORDER BY created_at ASC
+    </select>
+
+    <select id="selectByExecutionIdAndStatus" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM saga_step_execution
+        WHERE execution_id = #{executionId} AND status = #{status}
+        ORDER BY created_at ASC
+    </select>
+
+    <select id="selectByStepId" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM saga_step_execution
+        WHERE step_id = #{stepId}
+    </select>
+
+    <update id="update" parameterType="com.dms.liteflow.infrastructure.saga.persistence.entity.StepExecutionEntity">
+        UPDATE saga_step_execution
+        SET status = #{status},
+            output_data = #{outputData},
+            error_code = #{errorCode},
+            error_message = #{errorMessage},
+            stack_trace = #{stackTrace},
+            compensated_at = #{compensatedAt}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateStatus">
+        UPDATE saga_step_execution
+        SET status = #{status}
+        WHERE step_id = #{stepId}
+    </update>
+
+    <update id="updateCompensatedAt">
+        UPDATE saga_step_execution
+        SET compensated_at = #{compensatedAt}
+        WHERE step_id = #{stepId}
+    </update>
+
+    <delete id="deleteByExecutionId">
+        DELETE FROM saga_step_execution WHERE execution_id = #{executionId}
+    </delete>
+
+    <delete id="deleteByStepId">
+        DELETE FROM saga_step_execution WHERE step_id = #{stepId}
+    </delete>
+
+    <select id="countByExecutionId" resultType="long">
+        SELECT COUNT(*) FROM saga_step_execution WHERE execution_id = #{executionId}
+    </select>
+
+    <select id="selectCompensatableSteps" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>
+        FROM saga_step_execution
+        WHERE execution_id = #{executionId}
+          AND needs_compensation = true
+          AND status = 'COMPLETED'
+          AND compensated_at IS NULL
+        ORDER BY created_at DESC
+    </select>
+
+</mapper>
